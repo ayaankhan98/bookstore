@@ -1,2 +1,3 @@
-# bookstore
-Book Review WebApp
+# Project 1
+
+Web Programming with Python and JavaScript
