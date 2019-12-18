@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Sign Up
+{% endblock %}
+
+{% block nav %}
+<nav class="navbar navbar-dark bg-dark">
+    <a class="navbar-brand" href="{{ url_for('index') }}">CS50 Book Store</a>
+    <div class="btn-group" role="group">
+        <a href="{{ url_for('login') }}" class="btn btn-dark" role="button">Login</a>
+        <a href="{{ url_for('reg') }}" class="btn btn-dark" role="button">Sign Up</a>
+      </div>
+</nav>
+{% endblock %}
+ 
+{% block body %}<br>
+<h4>{{ message }}</h4>
+<p>No Account?<br>Sign Up Now</p>
+<h2>Sign Up</h2><br>
+<form action = "{{ url_for('signup') }}" method="post">
+    <div class="form-group">
+        <input type="text" name="name" class="form-control" placeholder="NAME">
+    </div>
+    <div class="form-group">
+        <input type="text" name="username" class="form-control" placeholder="USERNAME">
+    </div>
+    <div class="form-group">
+        <input type="password" name="password" class="form-control" placeholder="PASSWORD">
+    </div>
+    <div class="form-group">
+        <button class="btn btn-primary">Sign Up</button>
+    </div>
+</form>
+{% endblock %}
