@@ -1,16 +1,6 @@
 {% extends "layout.html" %}
 
 
-
-{% block nav %}
-<nav class="navbar navbar-dark bg-dark">
-    <a class="navbar-brand" href="{{ url_for('index') }}">CS50 Book Store</a>
-    <div class="btn-group" role="group">
-        <a href="{{ url_for('logout') }}" class="btn btn-dark" role="button">Logout</a>
-      </div>
-</nav>
-{% endblock %}
-
 {% block body %}
 <h1>
   welcome  {{ username }}

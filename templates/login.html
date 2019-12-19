@@ -4,15 +4,7 @@
 Login
 {% endblock %}
 
-{% block nav %}
-<nav class="navbar navbar-dark bg-dark">
-    <a class="navbar-brand" href="{{ url_for('index') }}">CS50 Book Store</a>
-    <div class="btn-group" role="group">
-        <a href="{{ url_for('login') }}" class="btn btn-dark" role="button">Login</a>
-        <a href="{{ url_for('reg') }}" class="btn btn-dark" role="button">Sign Up</a>
-      </div>
-</nav>
-{% endblock %}
+
 
 {% block body%}<br><br>
 {{ message }}
