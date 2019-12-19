@@ -8,21 +8,10 @@ db = scoped_session(sessionmaker(bind=engine))
 
 
 def main():
-    name = input("name : ")
-    username = input("username : ")
-    password = input("password :")
-    #check weather user already exist or not
-    user = db.execute("SELECT * from users WHERE username=:username",
-                        {'username':username}).fetchall()
-    
-    print(user[0][3])
-    if len(user)==0:
-        db.execute("INSERT INTO users (name,username,password) VALUES (:name, :username, :password)",
-                    {'name':name, 'username':username, 'password':password})
-        db.commit()
-        print("user registered")
-    else:
-        print("already exist")
-
+    book_id = input("Enter id : ")
+    book = db.execute("SELECT * FROM books WHERE book_id=:book_id",
+                        {'book_id':book_id}).fetchall()
+    book = dict(book[0])
+    print(book)
 if __name__=="__main__":
     main()
