@@ -22,14 +22,15 @@ def index():
     username = session.get('username')
     if username is None:
         return render_template("index.html",login=menu['login'], signup=menu['signup'])
-    return render_template("index.html",username=username, logout=menu['logout'])
+    name = (db.execute("SELECT name FROM users WHERE username=:username",{'username':username}).fetchall())[0][0]
+    return render_template("index.html",username=name, logout=menu['logout'])
 
 @app.route('/login')
 def login():
     if session.get('username') is None:
         return render_template('login.html',login=menu['login'], signup=menu['signup'])
-    
-    return render_template("main.html",username=session.get('username'), logout=menu['logout'])
+    name = (db.execute("SELECT name FROM users WHERE username=:username",{'username':username}).fetchall())[0][0]
+    return render_template("main.html",username=name, logout=menu['logout'])
     
 
 @app.route('/reg')
@@ -44,11 +45,12 @@ def auth():
     user = db.execute("SELECT * from users WHERE username=:username",
                         {'username':username}).fetchall()
     if len(user) == 0:
-        return render_template("signup.html",message="User Not Exist Please Sign Up Here",login=menu['login'], signup=['signup'])
+        return render_template("signup.html",message="User Not Exist Please Sign Up Here",login=menu['login'], signup=menu['signup'])
     
     if password == user[0][3]:
         session['username'] = username
-        return render_template("main.html",username=username, logout=menu['logout'])
+        name = user[0][1]
+        return render_template("main.html",username=name, logout=menu['logout'])
     else:
         return render_template('login.html',message="Invalid Used Id Or Password",login=menu['login'], signup=menu['signup'])
 
@@ -61,7 +63,7 @@ def signup():
     password = sha384((request.form.get("password")).encode()).hexdigest()
 
     #check weather user already exist or not
-    user = db.execute("SELECT * from users WHERE username=:username",
+    user = db.execute("SELECT * FROM users WHERE username=:username",
                         {'username':username}).fetchall()
     
     if len(user)==0:
@@ -79,3 +81,67 @@ def logout():
     return redirect(url_for('index'))
 
 
+@app.route('/profile')
+def profile():
+    name = (db.execute("SELECT name FROM users WHERE username=:username",{'username':session['username']}).fetchall())[0][0]
+    return render_template("main.html",username=name, logout=menu['logout'])
+
+
+@app.route('/search', methods=["POST"])
+def search():
+    username = session.get('username')
+    if username is None:
+        return render_template("index.html",login=menu['login'], signup=menu['signup'])
+    name = (db.execute("SELECT name FROM users WHERE username=:username",{'username':session['username']}).fetchall())[0][0]
+    search_by = request.form.get("search_by")
+    search_text = request.form.get("search_text")
+    bookList =[]
+    if search_by == 'isbn':
+        books = db.execute("SELECT * FROM books WHERE isbn=:isbn",
+                            {'isbn':search_text}).fetchall()
+        if not books:
+            return render_template("main.html",username=name,logout=menu['logout'],message="No book with specified ISBN Number")
+        for book in books:
+            book = dict(book)
+            bookList.append(book)
+        return render_template("main.html",username=name,logout=menu['logout'],books=bookList)
+    
+    search_text = "%"+search_text+"%"
+    if search_by == 'author':
+        books = db.execute("SELECT * FROM books WHERE author LIKE :search_text",
+                            {'search_text':search_text}).fetchall()
+        if not books:
+           return render_template("main.html",username=name,logout=menu['logout'],message="No book with specified Author Name") 
+        
+        for book in books:
+            book = dict(book)
+            bookList.append(book)
+        return render_template("main.html",username=name,logout=menu['logout'],books=bookList)
+
+    if search_by == 'title':
+        books = db.execute("SELECT * FROM books WHERE title LIKE :search_text",
+                            {'search_text':search_text}).fetchall()
+        
+        if not books:
+            return render_template("main.html",username=name,logout=menu['logout'],message="No book with specified Title")
+        
+        for book in books:
+            book = dict(book)
+            bookList.append(book)
+        return render_template("main.html",username=name,logout=menu['logout'],books=bookList)
+
+    return render_template("main.html",username=name, logout=menu['logout'])
+
+@app.route('/book/<int:book_id>')
+def book(book_id):
+    username = session.get('username')
+    if username is None:
+        return render_template("index.html",login=menu['login'], signup=menu['signup'],message="Please Login First")
+    book = db.execute("SELECT * FROM books WHERE book_id=:book_id",
+                        {'book_id':book_id}).fetchall()
+    book = dict(book[0])
+    return render_template("book.html",book=book)
+
+@app.route('/review')
+def review():
+    return
