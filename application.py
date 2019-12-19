@@ -14,32 +14,43 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
+menu = {'login':"Login",'signup':"Sign Up",'logout':"Logout"}
 
 @app.route('/')
 @app.route('/home')
 def index():
-    return render_template("index.html")
+    username = session.get('username')
+    if username is None:
+        return render_template("index.html",login=menu['login'], signup=menu['signup'])
+    return render_template("index.html",username=username, logout=menu['logout'])
 
 @app.route('/login')
 def login():
-    return render_template("login.html")
+    if session.get('username') is None:
+        return render_template('login.html',login=menu['login'], signup=menu['signup'])
+    
+    return render_template("main.html",username=session.get('username'), logout=menu['logout'])
+    
 
 @app.route('/reg')
 def reg():
-    return render_template("signup.html")
+    return render_template("signup.html",login=menu['login'], signup=menu['signup'])
 
 @app.route('/auth', methods=["POST"])
 def auth():
-    session['username'] = request.form.get("username")
-    session['password'] = sha384(request.form.get("password").encode()).hexdigest()
+    username = request.form.get("username")
+    password = sha384(request.form.get("password").encode()).hexdigest()
 
     user = db.execute("SELECT * from users WHERE username=:username",
-                        {'username':session['username']}).fetchall()
+                        {'username':username}).fetchall()
     if len(user) == 0:
-        return render_template("signup.html",message="User Not Exist Please Sign Up Here")
+        return render_template("signup.html",message="User Not Exist Please Sign Up Here",login=menu['login'], signup=['signup'])
     
-    if session['password'] == user[0][3]:
-        return render_template("main.html",username=session['username'])
+    if password == user[0][3]:
+        session['username'] = username
+        return render_template("main.html",username=username, logout=menu['logout'])
+    else:
+        return render_template('login.html',message="Invalid Used Id Or Password",login=menu['login'], signup=menu['signup'])
 
 
 @app.route('/register', methods=["POST"])
@@ -57,13 +68,14 @@ def signup():
         db.execute("INSERT INTO users (name,username,password) VALUES (:name, :username, :password)",
                     {'name':name, 'username':username, 'password':password})
         db.commit()
-        return render_template('login.html',message="signup successful")
+        return render_template('login.html',message="signup successful",login=menu['login'], signup=menu['signup'])
     else:
-        return render_template("signup.html", message="Username Already exist")
+        return render_template("signup.html", message="Username Already exist",login=menu['login'], signup=menu['signup'])
 
 
 @app.route('/logout')
 def logout():
-    return
+    session.clear()
+    return redirect(url_for('index'))
 
 
