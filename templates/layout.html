@@ -16,8 +16,6 @@
     <body>
         <nav class="navbar navbar-dark bg-dark">
             <a class="navbar-brand" href="{{ url_for('index') }}">CS50 Book Store</a>
-            <div class="container"><a class="navbar-brand" href="{{ url_for('index') }}">{{ username }}</a></div>
-            
             <div class="btn-group" role="group">
                 <a href="{{ url_for('login') }}" class="btn btn-dark" role="button">{{ login }}</a>
                 <a href="{{ url_for('logout') }}" class="btn btn-dark" role="button">{{ logout }}</a>
@@ -25,6 +23,8 @@
               </div>
         </nav>
     <div class="container">
+    <div class="container"><a class="navbar-brand text-dark" href="{{ url_for('profile') }}">{{ username }}</a></div>
+    {{ message }}
         <div style="height: 800px;">
             {% block body %}
             {% endblock %}
@@ -32,11 +32,11 @@
 
         </div>
         <br><br>
-        <footer class="page-footer font-small bg-dark pt-4 text-center text-white">
-            <div class="container" style="height: 150px;">
+ <!--      <footer class="page-footer font-small bg-dark pt-4 text-center text-white">
+            <div class="container">
                 <br><br><br>
                 <div>© 2019 Copyright: Ayaan Khan</div>  
             </div><br>
-        </footer>
+        </footer>--> 
     </body>
 </html>
