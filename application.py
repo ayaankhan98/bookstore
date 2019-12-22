@@ -6,8 +6,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from hashlib import sha384
 
 app = Flask(__name__)
-engine = create_engine("postgres://vebjahnwcfcutc:df3882e4534f6f9197ba80440c37e2a38d08239fa19c579aaf3dad2d55a13779@ec2-174-129-33-19.compute-1.amazonaws.com:5432/d3c5hfc4fn1lq
-")
+engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
 
 app.config["SESSION_PERMANENT"] = False
