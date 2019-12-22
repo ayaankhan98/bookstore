@@ -40,16 +40,19 @@ def auth():
     password = sha384(request.form.get("password").encode()).hexdigest()
 
     if len(username)==0 or len(password)==0:
-        return render_template("login.html", message="**Please Fill the fields",login=menu['login'], signup=menu['signup'],status=status)
+        return render_template("login.html", message="**Please Fill the fields",
+                                login=menu['login'], signup=menu['signup'],status=status)
     user = db.execute("SELECT * from users WHERE username=:username",
                         {'username':username}).fetchall()
     if not user:
-        return render_template("signup.html",message="User Not Exist Please Sign Up Here",login=menu['login'], signup=menu['signup'],status=status)
+        return render_template("signup.html",message="User Not Exist Please Sign Up Here",
+                                login=menu['login'], signup=menu['signup'],status=status)
     if password == user[0][3]:
         session['user'] = user
         return render_template("main.html",user=session.get('user'), logout=menu['logout'],status=not status)
     else:
-        return render_template('login.html',message="Invalid Used Id Or Password",login=menu['login'], signup=menu['signup'],status=status)
+        return render_template('login.html',message="Invalid Used Id Or Password",login=menu['login'],
+                                signup=menu['signup'],status=status)
 
 
 @app.route('/register', methods=["POST"])
@@ -60,7 +63,8 @@ def signup():
     password = sha384((request.form.get("password")).encode()).hexdigest()
 
     if len(name)==0 or len(username)==0 or len(password)==0:
-        return render_template("signup.html", message="**All Fields are Mandatory",login=menu['login'], signup=menu['signup'],status=status)
+        return render_template("signup.html", message="**All Fields are Mandatory",
+                                login=menu['login'], signup=menu['signup'],status=status)
 
     #check weather user already exist or not
     user = db.execute("SELECT * FROM users WHERE username=:username",
@@ -70,9 +74,11 @@ def signup():
         db.execute("INSERT INTO users (name,username,password) VALUES (:name, :username, :password)",
                     {'name':name, 'username':username, 'password':password})
         db.commit()
-        return render_template('login.html',message="signup successful",login=menu['login'], signup=menu['signup'],status=status)
+        return render_template('login.html',message="signup successful",login=menu['login'],
+                                 signup=menu['signup'],status=status)
     else:
-        return render_template("signup.html", message="Username Already exist",login=menu['login'], signup=menu['signup'],status=status)
+        return render_template("signup.html", message="Username Already exist",login=menu['login'],
+                                 signup=menu['signup'],status=status)
 
 
 @app.route('/logout')
@@ -97,7 +103,8 @@ def search():
         books = db.execute("SELECT * FROM books WHERE isbn=:isbn",
                             {'isbn':search_text}).fetchall()
         if not books:
-            return render_template("main.html",user=user,logout=menu['logout'],message="No book with specified ISBN Number",status=not status)
+            return render_template("main.html",user=user,logout=menu['logout'],
+                                    message="No book with specified ISBN Number",status=not status)
         return render_template("main.html",user=user,logout=menu['logout'],books=books,status=not status)
     
     search_text = "%"+search_text+"%"
@@ -105,7 +112,8 @@ def search():
         books = db.execute("SELECT * FROM books WHERE author LIKE :search_text",
                             {'search_text':search_text}).fetchall()
         if not books:
-           return render_template("main.html",user=user,logout=menu['logout'],message="No book with specified Author Name", status=not status) 
+           return render_template("main.html",user=user,logout=menu['logout'],
+                                    message="No book with specified Author Name", status=not status) 
         
         return render_template("main.html",user=user,logout=menu['logout'],books=books, status=not status)
 
@@ -114,7 +122,8 @@ def search():
                             {'search_text':search_text}).fetchall()
         
         if not books:
-            return render_template("main.html",user=user,logout=menu['logout'],message="No book with specified Title", status=not status)
+            return render_template("main.html",user=user,logout=menu['logout'],
+                                        message="No book with specified Title", status=not status)
         
         return render_template("main.html",user=user,logout=menu['logout'],books=books, status=not status)
 
@@ -123,7 +132,8 @@ def search():
 @app.route('/book/<int:book_id>')
 def book(book_id):
     if not session.get('user'):
-        return render_template("index.html",login=menu['login'], signup=menu['signup'],message="Please Login First", status=status)
+        return render_template("index.html",login=menu['login'], signup=menu['signup'],
+                                    message="Please Login First", status=status)
     book = db.execute("SELECT * FROM books WHERE book_id=:book_id",
                         {'book_id':book_id}).fetchall()
     session['book'] = book
@@ -147,7 +157,8 @@ def review():
 @app.route('/api/book/<int:book_id>')
 def api(book_id):
     if not session.get('user'):
-        return render_template("index.html",login=menu['login'], signup=menu['signup'],message="To Access API Please Login First", status=status)
+        return render_template("index.html",login=menu['login'], signup=menu['signup'],
+                                message="To Access API Please Login First", status=status)
     book = db.execute("SELECT * FROM books WHERE book_id=:book_id",
                         {'book_id':book_id}).fetchall()
     if len(book)==0:
