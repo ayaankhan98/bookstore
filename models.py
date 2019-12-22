@@ -19,6 +19,8 @@ class Book(db.Model):
 
 class Review(db.Model):
     __tablename__ = "reviews"
-    user_id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable = False)
+    book_id = db.Column(db.Integer, db.ForeignKey('books.book_id'), nullable=False)
     rating = db.Column(db.Integer, nullable = True)
     comment = db.Column(db.String, nullable = True)

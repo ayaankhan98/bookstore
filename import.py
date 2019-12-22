@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 
-engine = create_engine("postgres://hudvklvicrsftt:001855057c2e059c6f477371435a068a479dc3eb63ffc8622860e5c3f22aac5a@ec2-174-129-255-17.compute-1.amazonaws.com:5432/d1f056i6gfrfdd")
+engine = create_engine("postgresql://postgres:3gk9yy=l@localhost:5432/users")
 db = scoped_session(sessionmaker(bind=engine))
 
 def main():

@@ -17,26 +17,29 @@
         <nav class="navbar navbar-dark bg-dark">
             <a class="navbar-brand" href="{{ url_for('index') }}">CS50 Book Store</a>
             <div class="btn-group" role="group">
-                <a href="{{ url_for('login') }}" class="btn btn-dark" role="button">{{ login }}</a>
-                <a href="{{ url_for('logout') }}" class="btn btn-dark" role="button">{{ logout }}</a>
-                <a href="{{ url_for('reg') }}" class="btn btn-dark" role="button">{{ signup }}</a>
-              </div>
+                {% if status %}
+                    <a href="{{ url_for('logout') }}" class="btn btn-dark" role="button">{{ logout }}</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="btn btn-dark" role="button">{{ login }}</a>
+                    <a href="{{ url_for('reg') }}" class="btn btn-dark" role="button">{{ signup }}</a>
+                {% endif %}
+            </div>
         </nav>
     <div class="container">
-    <div class="container"><a class="navbar-brand text-dark" href="{{ url_for('profile') }}">{{ username }}</a></div>
-    {{ message }}
+    <div class="container"><a class="navbar-brand text-dark" href="{{ url_for('profile') }}">
+        {% if user %}
+        {% for data in user %}
+        <h4>{{ data.name }}</h4>
+        {% endfor %}
+        {% else %}
+        <h1></h1>
+    {% endif %}
+    </a></div>
+    <b>{{ message }}</b>
         <div style="height: 800px;">
             {% block body %}
             {% endblock %}
         </div>
-
         </div>
-        <br><br>
- <!--      <footer class="page-footer font-small bg-dark pt-4 text-center text-white">
-            <div class="container">
-                <br><br><br>
-                <div>© 2019 Copyright: Ayaan Khan</div>  
-            </div><br>
-        </footer>--> 
     </body>
 </html>
