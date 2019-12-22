@@ -1,3 +1,2 @@
-# Project 1
+# BOOK Store
 
-Web Programming with Python and JavaScript
