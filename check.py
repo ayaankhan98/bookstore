@@ -8,10 +8,12 @@ db = scoped_session(sessionmaker(bind=engine))
 
 
 def main():
-    book_id = input("Enter id : ")
+    book_id = input("Enter book id :")
     book = db.execute("SELECT * FROM books WHERE book_id=:book_id",
-                        {'book_id':book_id}).fetchall()
-    book = dict(book[0])
+                            {'book_id':book_id}).fetchall()
+    if len(book)==0:
+        print("No book found")
+        return ("No Book found")
     print(book)
 if __name__=="__main__":
     main()
